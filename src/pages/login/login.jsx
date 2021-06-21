@@ -7,8 +7,31 @@ import icon from "./images/icon.jpg"
 
 export default class Login extends Component {
     submitHandle = (e) => {
-        // e.preventDefault()
-        alert("登陆成功")
+        //e.preventDefault()
+        console.log("表单验证成功")
+        //function({ values, errorFields, outOfDate })
+    }
+    submitFailedHandle = (values, err, out) => {
+        //if (err) {
+        console.log("表单验证失败")
+        //}
+    }
+    validator = (rule, value, callback) => {
+        // console.log(rule, value)
+        const length = value && value.length
+        const pwdReg = /^[a-zA-Z0-9_]+$/
+        if (!value) {
+            // callback 如果不传参代表校验成功，如果传参代表校验失败，并且会提示错误
+            callback('必须输入密码')
+        } else if (length < 4) {
+            callback('密码必须大于 4 位')
+        } else if (length > 12) {
+            callback('密码必须小于 12 位')
+        } else if (!pwdReg.test(value)) {
+            callback('密码必须是英文、数组或下划线组成')
+        } else {
+            callback() // 必须调用 callback
+        }
     }
     render() {
 
@@ -28,30 +51,28 @@ export default class Login extends Component {
                             remember: true,
                         }}
                         onFinish={this.submitHandle}
+                        onFinishFailed={this.submitFailedHandle}
 
                     >
                         <Form.Item
                             name="username"
                             rules={[
-                                {
-                                    required: true,
-                                    message: 'Please input your Username!',
-                                },
+                                { required: true, whitespace: false, message: '必须输入用户名' },
+                                { min: 4, message: '用户名必须大于 4 位' },
+                                { max: 12, message: '用户名必须小于 12 位' },
+                                { pattern: /^[a-zA-Z0-9_]+$/, message: '用户名必须是英文、数组或下划线组成' },
                             ]}
                         >
-                            <Input prefix={<UserOutlined className="site-form-item-icon" style={{ color: 'rgba(22, 20, 2, 0.2)' }} />} placeholder="用户名" />
+                            <Input prefix={<UserOutlined className="site-form-item-icon" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="用户名" />
                         </Form.Item>
                         <Form.Item
                             name="password"
                             rules={[
-                                {
-                                    required: true,
-                                    message: 'Please input your Password!',
-                                },
+                                { validator: this.validator }
                             ]}
                         >
                             <Input
-                                prefix={<LockOutlined className="site-form-item-icon" />}
+                                prefix={<LockOutlined className="site-form-item-icon" style={{ color: 'rgba(0,0,0,.25)' }} />}
                                 type="password"
                                 placeholder="密码"
                             />
