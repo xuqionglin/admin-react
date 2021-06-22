@@ -1,14 +1,34 @@
 import React, { Component } from 'react'
 import { Form, Input, Button } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
-
+import { message } from 'antd'
 import "./login.less"
 import icon from "./images/icon.jpg"
+import { reqLogin } from "../../api"
+import memoryUtils from '../../utils/memoryUtils'
+import localstorageUtils from '../../utils/localstorageUtils'
+import { Redirect } from 'react-router'
 
 export default class Login extends Component {
-    submitHandle = (e) => {
+    submitHandle = async (value) => {
+
+        const { username, password } = value
+        const result = await reqLogin(username, password)
+        if (result.status === 0) {
+            message.success("登录成功")
+            const user = result.data
+            memoryUtils.user = user
+            localstorageUtils.saveUser(user)
+            this.props.history.replace('/')
+
+
+        } else {
+            message.error("登录失败" + result.msg)
+        }
+        //console.log(result)
+
         //e.preventDefault()
-        console.log("表单验证成功")
+        // console.log("表单验证成功")
         //function({ values, errorFields, outOfDate })
     }
     submitFailedHandle = (values, err, out) => {
@@ -34,7 +54,11 @@ export default class Login extends Component {
         }
     }
     render() {
+        const user = memoryUtils.user
 
+        if (user._id && user) {
+            return <Redirect to="/" />
+        }
 
         return (
             <div className="login">
