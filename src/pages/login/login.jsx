@@ -16,10 +16,10 @@ export default class Login extends Component {
         const result = await reqLogin(username, password)
         if (result.status === 0) {
             message.success("登录成功")
-            const user = result.data
+            const user = result.data  
             memoryUtils.user = user
-            localstorageUtils.saveUser(user)
-            this.props.history.replace('/')
+            localstorageUtils.saveUser(user)//把登陆的用户信息保存到本地
+            this.props.history.replace('/')//跳转，不能回退
 
 
         } else {
@@ -36,6 +36,7 @@ export default class Login extends Component {
         console.log("表单验证失败")
         //}
     }
+    //antd自定义验证
     validator = (rule, value, callback) => {
         // console.log(rule, value)
         const length = value && value.length
@@ -57,7 +58,7 @@ export default class Login extends Component {
         const user = memoryUtils.user
 
         if (user._id && user) {
-            return <Redirect to="/" />
+            return <Redirect to="/" />//如果已登录，跳转到主页，Redirect重定向
         }
 
         return (
@@ -79,7 +80,7 @@ export default class Login extends Component {
 
                     >
                         <Form.Item
-                            name="username"
+                            name="username"//在antd4中，Form.Item中写上name属性，即可使用form的~，获取value等数据
                             rules={[
                                 { required: true, whitespace: false, message: '必须输入用户名' },
                                 { min: 4, message: '用户名必须大于 4 位' },
@@ -95,6 +96,7 @@ export default class Login extends Component {
                                 { validator: this.validator }
                             ]}
                         >
+                        
                             <Input
                                 prefix={<LockOutlined className="site-form-item-icon" style={{ color: 'rgba(0,0,0,.25)' }} />}
                                 type="password"

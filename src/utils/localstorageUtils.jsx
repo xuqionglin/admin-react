@@ -1,3 +1,4 @@
+//使用store库来储存用户信息
 import store from 'store'
 const USER_KEY = 'user_key'
 /*包含 n 个操作 local storage 的工具函数的模块
