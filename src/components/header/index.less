@@ -1,0 +1,50 @@
+.header {
+height: 80px;
+background-color: #fff;
+.header-top {
+height: 40px;
+line-height: 40px;//占满，实现垂直居中对齐
+text-align: right;
+padding-right: 20px;//为最右边的元素设置的
+border-bottom: 1px solid #1DA57A;
+}
+.header-bottom {
+display: flex;
+align-items: center;//垂直居中
+height: 40px;
+.header-bottom-left {
+position: relative;
+width: 25%;
+font-size: 20px;
+text-align: center;
+&::after {
+content: '';
+position: absolute;
+top: 30px;
+right: 50%;
+transform: translateX(50%);//left/right:50%+translateX(50%),
+border-top: 20px solid white;
+border-right: 20px solid transparent;
+border-bottom: 20px solid transparent;
+border-left: 20px solid transparent;
+}
+}
+.header-bottom-right {
+width: 75%;
+text-align: right;
+margin-right: 30px;
+img {
+width: 30px;
+height: 20px;
+margin: 0 15px;
+}
+}
+}
+}
+.link-button{
+    border:none;
+    outline:none;
+    background-color:transparent;
+    color:#1DA57A;
+    cursor:pointer;
+}
