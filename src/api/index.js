@@ -53,3 +53,23 @@ export const reqUpdateCategory = ({ categoryId, categoryName }) =>
         categoryId,
         categoryName
     }, 'POST')
+
+// 根据分类 ID 获取分类，给级联列表用的
+export const reqCategory = (categoryId) => ajax('/manage/category/info', { categoryId })
+// 获取商品分页列表
+export const reqProducts = (pageNum, pageSize) => ajax('/manage/product/list', {
+    pageNum,
+    pageSize
+})
+// 根据 ID/Name 搜索产品分页列表
+export const reqSearchProducts = ({ pageNum, pageSize, searchType, searchName }) => ajax('/manage/product/search', {
+    pageNum,
+    pageSize,
+    [searchType]: searchName
+})
+//更改商品的状态，上架/下架
+export const reqUpdateProductStatus = (productId, status) => ajax('./manage/product/updateStatus', {
+    productId,
+    status
+}, 'POST')
+
