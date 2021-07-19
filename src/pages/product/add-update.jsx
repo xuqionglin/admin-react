@@ -9,11 +9,18 @@ import {
 import LinkButton from '../../components/header/link-button'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import { reqCategory, reqCategorys } from '../../api'
+import PictureWall from './picture-wall'
+import RichTextEditor from './rich-text-editor'
 const { Item } = Form
 
 export default class ProductAddUpdate extends Component {
     state = {
         options: []
+    }
+    constructor(props) {
+        super(props)
+        this.pw = React.createRef()
+        this.editor = React.createRef()
     }
     product = this.props.location.state
     //二级级联列表懒加载
@@ -22,18 +29,21 @@ export default class ProductAddUpdate extends Component {
         targetOption.loading = true;
 
         const subCategorys = await this.getCategorys(targetOption.value)
+        console.log("=================")
+        console.log(subCategorys)
         targetOption.loading = false;
         if (subCategorys && subCategorys.length > 0) {
+
             const cOptions = subCategorys.map(c => ({
                 value: c._id,
-                babel: c.name,
+                label: c.name,
                 isLeaf: true,
             }))
+            console.log(cOptions)
             targetOption.children = cOptions
         } else {
             targetOption.isLeaf = true
         }
-
 
         this.setState({
             options: [...this.state.options]
@@ -45,8 +55,18 @@ export default class ProductAddUpdate extends Component {
         const options = categorys.map(c => ({
             value: c._id,
             label: c.name,
-            isLeft: false,
+            isLeaf: false,
         }))
+        /*   options.map(async o => {
+              const subCategorys = await this.getCategorys(o.value)
+              const cOptions = subCategorys.map(s => ({
+                  value: s._id,
+                  label: s.name,
+                  isLeaf: true,
+              }))
+              o.children = cOptions
+          }) */
+
         const { product, isUpdate } = this
         console.log(categorys)
         if (isUpdate && product.pCategoryId !== '0') {
@@ -64,6 +84,7 @@ export default class ProductAddUpdate extends Component {
             }
         }
         console.log(categorys)
+
         this.setState({
             options
         })
@@ -89,6 +110,7 @@ export default class ProductAddUpdate extends Component {
             callback('价格必须是大于 0 的数值')
         }
     }
+
     componentDidMount() {
         console.log(this.props)
         this.getCategorys('0')
@@ -112,18 +134,19 @@ export default class ProductAddUpdate extends Component {
 
         const formItemLayout = {
             labelCol: { span: 2 },
-            wrapperCol: { span: 8 }
+            wrapperCol: { span: 9 }
         }
         //设置修改页面分类初始值
         const categoryIds = []
         if (isUpdate) {
-
             if (pCategoryId === '0') {
                 categoryIds.push(categoryId)
             } else {
-                categoryIds.push(pCategoryId)
-                categoryIds.push(categoryId)
 
+                categoryIds.push(pCategoryId)
+                console.log(pCategoryId)
+                categoryIds.push(categoryId)
+                console.log(categoryId)
             }
         }
 
@@ -144,13 +167,17 @@ export default class ProductAddUpdate extends Component {
                     </Item>
                     <Item label="商品分类" {...formItemLayout} name='categoryIds' initialValue={categoryIds}
                         rules={[{ required: true, message: '商品分类必须输入' }]}>
-                        <Cascader options={options} loadData={this.loadData} />
+                        <Cascader options={options} loadData={this.loadData} changeOnSelect />
                     </Item>
                     <Item label="商品图片" {...formItemLayout}>
-                        {/* <Input  placehoder='请输入商品价格'  /> */}
+                        <PictureWall imgs={product.imgs} ref={this.pw} />
                     </Item>
-                    <Item label="商品详情" {...formItemLayout}>
-                        {/* <Input  placehoder='请输入商品价格' /> */}
+                    <Item label="商品详情"
+                        labelCol={{ span: 2 }}
+                        wrapperCol={{ span: 20 }}
+
+                    >
+                        <RichTextEditor detail={product.detail} ref={this.editor} />
                     </Item>
                     <Button type='primary' onClick={() => alert(1)}>提交</Button>
                 </Form>

@@ -93,7 +93,7 @@ export default class Category extends Component {
     }
     //点击取消，隐藏确认框
     handleCancel = () => {
-        console.log(this.categoryNameRef.current.getFieldsValue())
+        //console.log(this.categoryNameRef.current.getFieldsValue())
         this.categoryNameRef.current.resetFields()
 
         this.setState({
